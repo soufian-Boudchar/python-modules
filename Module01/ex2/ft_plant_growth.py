@@ -15,18 +15,15 @@ class Plant:
         return f"{self.name}: {self.height}cm, {self.age_days} days old"
 
 
-def ft_plant_growth():
-    rose = Plant("Rose", 25, 30)
-    first_hight = rose.height
-    print("=== Day 1 ===")
-    print(rose.get_info())
 
-    for i in range(2, 8):
-        rose.grow(1)
-        rose.age()
-    print("=== Day 7 ===")
-    print(rose.get_info())
-    print(f"Growth this week: +{rose.height - first_hight}cm")
+rose = Plant("Rose", 25, 30)
+first_hight = rose.height
+print("=== Day 1 ===")
+print(rose.get_info())
 
-
-ft_plant_growth()
+for i in range(2, 8):
+    rose.grow(1)
+    rose.age()
+print("=== Day 7 ===")
+print(rose.get_info())
+print(f"Growth this week: +{rose.height - first_hight}cm")
