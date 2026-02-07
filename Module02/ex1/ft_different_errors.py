@@ -1,7 +1,8 @@
-#!/usr/bin/env python3
-
-
 def garden_operations():
+    """
+    Triggers and catches common Python built-in exceptions to 
+    demonstrate error handling in agricultural data pipelines.
+    """
     try:
         print("Testing ValueError...")
         int("abc")
@@ -31,11 +32,14 @@ def garden_operations():
         print("Testing multiple errors together...")
         12 / 0
         int("abc")
-    except ZeroDivisionError:
+    except (ZeroDivisionError, ValueError):
         print("Caught an error, but program continues!\n")
 
 
 def test_error_types():
+    """
+    Initializes the error demonstration and prints the required header format for the evaluation.
+    """
     print("=== Garden Error Types Demo ===\n")
     garden_operations()
     print("All error types tested successfully!")

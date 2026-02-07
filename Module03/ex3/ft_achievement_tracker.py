@@ -1,6 +1,9 @@
 alice = set(['first_kill', 'level_10', 'treasure_hunter', 'speed_demon'])
 bob = set(['first_kill', 'level_10', 'boss_slayer', 'collector'])
-charlie = set(['level_10', 'treasure_hunter', 'boss_slayer', 'speed_demon', 'perfectionist'])
+charlie = set([
+    'level_10', 'treasure_hunter', 'boss_slayer', 'speed_demon',
+    'perfectionist'
+])
 unique = alice.union(bob, charlie)
 common = alice.intersection(bob, charlie)
 
@@ -14,7 +17,6 @@ print(f"All unique achievements: {unique}")
 print(f"Total unique achievements: {len(unique)}\n")
 
 print(f"Common to all players: {common}")
-
 
 alice_only = alice.difference(charlie.union(bob))
 bob_only = bob.difference(alice.union(charlie))

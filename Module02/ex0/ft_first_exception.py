@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 def check_temperature(temp_str: str) -> int:
     """Validates if the input is a number and within
     the safe range (0-40) for plants."""
