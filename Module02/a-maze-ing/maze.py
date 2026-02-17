@@ -65,10 +65,7 @@ THEMES = {
         "enter":  "\033[38;5;183m██\033[0m",   # Light Lilac
         "exit":   "\033[38;5;89m██\033[0m",    # Grape
         "logo":   "\033[38;5;197m██\033[0m"    # Bright Pink
-    }
-}
-
-THEMES.update({
+    },
     "neon_nights": {  # High contrast Cyberpunk
         "walls":  "\033[38;5;234m██\033[0m",    # Pitch Black
         "path":   "\033[38;5;39m██\033[0m",     # Electric Blue
@@ -111,7 +108,10 @@ THEMES.update({
         "exit":   "\033[38;5;166m██\033[0m",    # Burnt Orange
         "logo":   "\033[38;5;172m██\033[0m"     # Bronze
     }
-})
+    
+}
+
+
 
 import random
 import os
@@ -129,8 +129,8 @@ BOTTOM = 4
 RIGHT = 2
 LEFT = 8
 
-SEED = 1
-# random.seed(SEED)
+SEED = 12213
+random.seed(SEED)
 
 
 class Cell:
