@@ -119,17 +119,17 @@ import time
 import sys
 
 WIDTH = 50
-HEIGHT = 20
+HEIGHT = 50
 
 ENTER = (0, 0)
-EXIT = (49,  19)
+EXIT = (49,  49)
 
 TOP = 1
 BOTTOM = 4
 RIGHT = 2
 LEFT = 8
 
-SEED = 122131
+SEED = 1337
 random.seed(SEED)
 
 
@@ -287,14 +287,10 @@ def draw_42(maze_grid):
             maze_grid[y_index_42 + row_index][x_index_42 + i].visited = True
 
     
-maze = Maze(WIDTH, HEIGHT)
-draw_42(maze.grid)
-maze.generate_maze()
-path = solve_maze(maze, maze.grid[ENTER[1]][ENTER[0]],
-                  maze.grid[EXIT[1]][EXIT[0]])
 
 
 def print_maze(maze, path, theme):
+
     print(f"{theme["walls"]}" * (maze.width * 2 + 1))
 
     for y in range(len(maze.grid)):
@@ -303,7 +299,8 @@ def print_maze(maze, path, theme):
 
         for x in range(len(maze.grid[y])):
             cell = maze.grid[y][x]
-
+            
+            #Center logic
             if x == EXIT[0] and y == EXIT[1]:
                 maze_way += f"{theme["exit"]}"
             elif x == ENTER[0] and y == ENTER[1]:
@@ -314,7 +311,9 @@ def print_maze(maze, path, theme):
                 maze_way += f"{theme["logo"]}"
             else:
                 maze_way += "  "
-
+                
+                
+            #Right logic
             if cell.walls & 2:
                 maze_way += f"{theme["walls"]}"
             else:
@@ -326,7 +325,7 @@ def print_maze(maze, path, theme):
                         maze_way += "  "
                 else:
                     maze_way += "  "
-
+            #Bottom logic
             if cell.walls & 4:
                 bottom += f"{theme["walls"]}"
             else:
@@ -359,27 +358,31 @@ def output_maze(maze, path):
         output.write(cell.traffic)
     output.close()
 
+def maze_animating(maze, path):
+    
+    theme_name = random.choice(list(THEMES.keys()))
+    theme = THEMES[theme_name]
+    tpath = []
+    print("\033[2J")
 
-output_maze(maze, path)
+    for _ in path[:]:
+        if path:
+            tpath.append(path.pop(0))
 
+        print("\033[H", end="")
+        print_maze(maze, tpath, theme)
 
-
-theme_name = random.choice(list(THEMES.keys()))
-theme = THEMES[theme_name]
-tpath = []
-print("\033[2J")
-
-for _ in path[:]:
-    if path:
-        tpath.append(path.pop(0))
+        sys.stdout.flush()
+        time.sleep(0.01)
 
     print("\033[H", end="")
     print_maze(maze, tpath, theme)
 
-    sys.stdout.flush()
-    time.sleep(0.01)
 
-print("\033[H", end="")
-print_maze(maze, tpath, theme)
 
-print(theme_name)
+maze = Maze(WIDTH, HEIGHT)
+draw_42(maze.grid)
+maze.generate_maze()
+path = solve_maze(maze, maze.grid[ENTER[1]][ENTER[0]], maze.grid[EXIT[1]][EXIT[0]])
+output_maze(maze, path)
+maze_animating(maze, path)
