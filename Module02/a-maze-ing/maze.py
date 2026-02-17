@@ -129,7 +129,7 @@ BOTTOM = 4
 RIGHT = 2
 LEFT = 8
 
-SEED = 12213
+SEED = 122131
 random.seed(SEED)
 
 
