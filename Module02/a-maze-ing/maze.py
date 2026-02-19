@@ -59,7 +59,7 @@ THEMES = {
 
     "bumblebee": {
         "walls":  "\033[48;5;237m  \033[0m",   # Dark Gray background, 2 spaces for full block
-        "path":   "\033[48;5;227m  \033[0m",   # Pale Yellow
+        "path":   "\033[38;5;196m██\033[0m",   # Pale Yellow
         "enter":  "\033[48;5;255m  \033[0m",   # White
         "exit":   "\033[48;5;214m  \033[0m",   # Orange-Gold
         "logo":   "\033[48;5;226m  \033[0m"    # Pure Yellow
@@ -105,11 +105,11 @@ THEMES = {
 
 
 
-WIDTH = 30
-HEIGHT = 10
+WIDTH = 80
+HEIGHT = 24
 
 ENTER = (0, 0)
-EXIT = (29,  0)
+EXIT = (79,  23)
 
 TOP = 1
 BOTTOM = 4
@@ -179,15 +179,14 @@ class Maze:
             next_cell.walls -= BOTTOM
 
     def generate_maze(self, maze):
-        start_cell = self.grid[0][0]
+        start_cell = self.grid[HEIGHT // 2][WIDTH // 2]
         start_cell.visited = True
         self.stack.append(start_cell)
-        cursor_1, cursor_2 = None, None
         
         print("\033[?25l", end="")
         while len(self.stack) > 0:
             current = self.stack[-1]
-            cursor_1 = current
+            # cursor_1 = current
             neighbors = self.check_neighbors(current)
 
             if neighbors:
@@ -197,15 +196,12 @@ class Maze:
                 self.stack.append(next_cell)
             else:
                 self.stack.pop()
-                
             time.sleep(0.01)
-            if len(self.stack) > 1:
-                cursor_2 = self.stack[-2]
             print("\033[H", end="")
-            print_maze(maze, self.empty, theme, next_cell, cursor_2)
+            print_maze(maze, self.empty, theme, next_cell, current)
             print(theme_name)
         print("\033[?25h", end="")
-        
+
 
 
 def delete_visited(maze):
@@ -289,23 +285,23 @@ def draw_42(maze_grid):
 
 
 def print_maze(maze, path, theme, cursor_1, cursor_2):
-    print(f"{theme["walls"]}" * (maze.width * 2 + 1))
+    print(f"{theme['walls']}" * (maze.width * 2 + 1))
     for y in range(len(maze.grid)):
-        maze_way = f"{theme["walls"]}"
-        bottom = f"{theme["walls"]}"
+        maze_way = f"{theme['walls']}"
+        bottom = f"{theme['walls']}"
 
         for x in range(len(maze.grid[y])):
             cell = maze.grid[y][x]
             
             #Center logic
             if x == EXIT[0] and y == EXIT[1]:
-                maze_way += f"{theme["exit"]}"
+                maze_way += f"{theme['exit']}"
             elif x == ENTER[0] and y == ENTER[1]:
-                maze_way += f"{theme["enter"]}"
+                maze_way += f"{theme['enter']}"
             elif cell in path:
-                maze_way += f"{theme["path"]}"
+                maze_way += f"{theme['path']}"
             elif cell.walls == 15:
-                maze_way += f"{theme["logo"]}"
+                maze_way += f"{theme['logo']}"
             elif cell == cursor_1:
                 maze_way += "\033[38;5;196m██\033[0m"
             elif cell == cursor_2:
@@ -317,30 +313,30 @@ def print_maze(maze, path, theme, cursor_1, cursor_2):
                 
             #Right logic
             if cell.walls & 2:
-                maze_way += f"{theme["walls"]}"
+                maze_way += f"{theme['walls']}"
             else:
                 if x + 1 < maze.width:
                     right = maze.grid[y][x + 1]
                     if cell in path and right in path:
-                        maze_way += f"{theme["path"]}"
+                        maze_way += f"{theme['path']}"
                     else:
                         maze_way += "  "
                 else:
                     maze_way += "  "
             #Bottom logic
             if cell.walls & 4:
-                bottom += f"{theme["walls"]}"
+                bottom += f"{theme['walls']}"
             else:
                 if y + 1 < maze.height:
                     down = maze.grid[y + 1][x]
                     if cell in path and down in path:
-                        bottom += f"{theme["path"]}"
+                        bottom += f"{theme['path']}"
                     else:
                         bottom += "  "
                 else:
                     bottom += "  "
 
-            bottom += f"{theme["walls"]}"
+            bottom += f"{theme['walls']}"
 
         print(maze_way)
         print(bottom)
@@ -380,25 +376,25 @@ def maze_animating(maze, path, theme):
     print("\033[H", end="")
     print_maze(maze, tpath, theme, None, None)
     print("\033[?25h", end="")
-    
 
 
 
-# def main():
+
+def main():
     
-#     maze = Maze(WIDTH, HEIGHT)
-#     draw_42(maze.grid)
-#     maze.generate_maze()
-#     path = solve_maze(maze, maze.grid[ENTER[1]][ENTER[0]], maze.grid[EXIT[1]][EXIT[0]])
-#     empty_maze = []
-#     animation = False
-#     show_path = False
-#     changed_maze = False
-#     theme = THEMES["electric_arctic"]
+    maze = Maze(WIDTH, HEIGHT)
+    draw_42(maze.grid)
+    maze.generate_maze(maze)
+    path = solve_maze(maze, maze.grid[ENTER[1]][ENTER[0]], maze.grid[EXIT[1]][EXIT[0]])
+    empty_maze = []
+    animation = False
+    show_path = False
+    changed_maze = False
+    theme = THEMES["electric_arctic"]
     
-#     os.system('cls' if os.name == 'nt' else 'clear')
-#     print("\033[H", end="")
-#     print_maze(maze, empty_maze, theme)
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print("\033[H", end="")
+    print_maze(maze, empty_maze, theme)
     
     
 #     while True:
