@@ -105,19 +105,19 @@ THEMES = {
 
 
 
-WIDTH = 80
-HEIGHT = 24
+WIDTH = 35
+HEIGHT = 12
 
 ENTER = (0, 0)
-EXIT = (79,  23)
+EXIT = (34,  1)
 
 TOP = 1
 BOTTOM = 4
 RIGHT = 2
 LEFT = 8
 
-SEED = 1337
-# random.seed(SEED)
+SEED = 133
+random.seed(SEED)
 
 theme_name = random.choice(list(THEMES.keys()))
 theme = THEMES[theme_name]
@@ -178,15 +178,14 @@ class Maze:
             current.walls -= TOP
             next_cell.walls -= BOTTOM
 
-    def generate_maze(self, maze):
+    def generate_maze(self, maze, theme, animation=False):
         start_cell = self.grid[HEIGHT // 2][WIDTH // 2]
         start_cell.visited = True
         self.stack.append(start_cell)
-
+        
         print("\033[?25l", end="")
         while len(self.stack) > 0:
             current = self.stack[-1]
-            # cursor_1 = current
             neighbors = self.check_neighbors(current)
 
             if neighbors:
@@ -194,13 +193,12 @@ class Maze:
                 self.remove_wall(current, next_cell)
                 next_cell.visited = True
                 self.stack.append(next_cell)
-                time.sleep(0.01)
-                print("\033[H", end="")
-                print_maze(maze, self.empty, theme, next_cell, current)
-                print(theme_name)
+                if animation:
+                    time.sleep(0.01)
+                    print("\033[H", end="")
+                    print_maze(maze, self.empty, theme, next_cell, current)
             else:
                 self.stack.pop()
-
         print("\033[?25h", end="")
 
 
@@ -379,102 +377,111 @@ def maze_animating(maze, path, theme):
     print("\033[?25h", end="")
 
 
+def change_seed():
+    global SEED
+    SEED = random.randint(0, 99999)
 
-
-def main():
+def main(theme):
     
     maze = Maze(WIDTH, HEIGHT)
     draw_42(maze.grid)
-    maze.generate_maze(maze)
+    maze.generate_maze(maze, theme)
     path = solve_maze(maze, maze.grid[ENTER[1]][ENTER[0]], maze.grid[EXIT[1]][EXIT[0]])
+    theme_name = random.choice(list(THEMES.keys()))
+    theme = THEMES[theme_name]
     empty_maze = []
     animation = False
     show_path = False
     changed_maze = False
-    theme = THEMES["electric_arctic"]
-    
+
     os.system('cls' if os.name == 'nt' else 'clear')
     print("\033[H", end="")
-    print_maze(maze, empty_maze, theme)
-    
-    
-#     while True:
-#         print("\n1. Regenerate maze")
-#         print("2. Show/hide path")
-#         print("3. Animation")
-#         print("4. Shuffle colors")
-#         print("5. Exit")
-#         user_in = int(input("\nEnter your choice: "))
+    print_maze(maze, empty_maze, theme, None, None)
 
 
-#         if user_in == 1: # Regenerate
-#             SEED = random.randint(1, 999999999)
-#             maze = Maze(WIDTH, HEIGHT)
-#             draw_42(maze.grid)
-#             maze.generate_maze()
-#             path = solve_maze(maze, maze.grid[ENTER[1]][ENTER[0]], maze.grid[EXIT[1]][EXIT[0]])
-#             os.system('cls' if os.name == 'nt' else 'clear')
-#             print("\033[H", end="")
-#             if show_path == True and animation == True:
-#                 maze_animating(maze, path, theme)
-#             elif show_path == True and animation == False:
-#                 print_maze(maze, path, theme)
-#             elif show_path == False:
-#                 print_maze(maze, empty_maze, theme)
-#             changed_maze = True
+    while True:
+        print("\n1. Regenerate maze")
+        print("2. Show/hide path")
+        print("3. Animation")
+        print("4. Shuffle colors")
+        print("5. Exit")
+        user_in = int(input("\nEnter your choice: "))
+
+
+        if user_in == 1: # Regenerate
+            SEED = random.randint(1, 999999999)
+            maze = Maze(WIDTH, HEIGHT)
+            draw_42(maze.grid)
+            if animation:
+                maze.generate_maze(maze, theme, True)
+            else:
+                maze.generate_maze(maze, theme)
+            path = solve_maze(maze, maze.grid[ENTER[1]][ENTER[0]], maze.grid[EXIT[1]][EXIT[0]])
+            os.system('cls' if os.name == 'nt' else 'clear')
+            print("\033[H", end="")
+            if show_path == True and animation == True:
+                maze_animating(maze, path, theme)
+                print("\033[H", end="")
+                print_maze(maze, path, theme, None, None)
+            elif show_path == True and animation == False:
+                print_maze(maze, path, theme, None, None)
+            elif show_path == False:
+                print_maze(maze, empty_maze, theme, None, None)
+            changed_maze = True
             
             
-#         elif user_in == 2: # Show/Hide path
-#             os.system('cls' if os.name == 'nt' else 'clear')
-#             print("\033[H", end="")
-#             if changed_maze == True:
-#                 changed_maze = False
-#                 show_path = False
+        elif user_in == 2: # Show/Hide path
+            os.system('cls' if os.name == 'nt' else 'clear')
+            print("\033[H", end="")
+            if changed_maze == True:
+                changed_maze = False
+                show_path = False
                 
-#             if show_path == False:
-#                 if animation == True:
-#                     maze_animating(maze, path, theme)
-#                 elif animation == False:
-#                     print_maze(maze, path, theme)
-#                 show_path = True
-#             else:
-#                 print_maze(maze, empty_maze, theme)
-#                 show_path = False
+            if show_path == False:
+                if animation == True:
+                    maze_animating(maze, path, theme)
+                elif animation == False:
+                    print_maze(maze, path, theme, None, None)
+                show_path = True
+            else:
+                print_maze(maze, empty_maze, theme, None, None)
+                show_path = False
             
-#         elif user_in == 3: # Animating
-#             os.system('cls' if os.name == 'nt' else 'clear')
-#             print("\033[H", end="")
-#             print_maze(maze, empty_maze, theme)
-#             if animation == True:
-#                 animation = False
-#             elif animation == False:
-#                 animation = True
+        elif user_in == 3: # Animating
+            os.system('cls' if os.name == 'nt' else 'clear')
+            print("\033[H", end="")
+            print_maze(maze, empty_maze, theme, None, None)
+            if animation == True:
+                animation = False
+            elif animation == False:
+                animation = True
             
-#         elif user_in == 4:
-#             theme_name = random.choice(list(THEMES.keys()))
-#             theme = THEMES[theme_name]
-#             if show_path == True:
-#                 os.system('cls' if os.name == 'nt' else 'clear')
-#                 print("\033[H", end="")
-#                 print_maze(maze, path, theme)
-#             else:
-#                 os.system('cls' if os.name == 'nt' else 'clear')
-#                 print("\033[H", end="")
-#                 print_maze(maze, empty_maze, theme)
-#         elif user_in == 5:
-#             os.system('cls' if os.name == 'nt' else 'clear')
-#             print("\033[H")
-#             exit()
+        elif user_in == 4:
+            # change_seed()
+            theme_name = random.choice(list(THEMES.keys()))
+            theme = THEMES[theme_name]
+            if show_path == True:
+                os.system('cls' if os.name == 'nt' else 'clear')
+                print("\033[H", end="")
+                print_maze(maze, empty_maze, theme, None, None)
+            else:
+                os.system('cls' if os.name == 'nt' else 'clear')
+                print("\033[H", end="")
+                print_maze(maze, empty_maze, theme, None, None)
+        elif user_in == 5:
+            os.system('cls' if os.name == 'nt' else 'clear')
+            print("\033[H")
+            exit()
         
 
-#     output_maze(maze, path)
-#     maze_animating(maze, path)
-# main()
+    output_maze(maze, path)
+    maze_animating(maze, path)
+main(theme)
 
 
-maze = Maze(WIDTH, HEIGHT)
-draw_42(maze.grid)
-maze.generate_maze(maze)
-os.system('cls' if os.name == 'nt' else 'clear')
-path = solve_maze(maze, maze.grid[ENTER[1]][ENTER[0]], maze.grid[EXIT[1]][EXIT[0]])
-maze_animating(maze, path, theme)
+# maze = Maze(WIDTH, HEIGHT)
+# draw_42(maze.grid)
+# maze.generate_maze(maze)
+# os.system('cls' if os.name == 'nt' else 'clear')
+# path = solve_maze(maze, maze.grid[ENTER[1]][ENTER[0]], maze.grid[EXIT[1]][EXIT[0]])
+# maze_animating(maze, path, theme)
