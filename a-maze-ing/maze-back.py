@@ -92,13 +92,12 @@ THEMES = {
         "exit":   "\033[38;5;129m██\033[0m",    # Purple
         "logo":   "\033[38;5;49m██\033[0m"      # Spring Green
     },
-"electric_arctic": {
-        "background": "\033[38;2;11;19;43m██\033[0m",     # 0xFF0B132B
-        "walls":      "\033[38;2;58;80;107m██\033[0m",    # 0xFF3A506B
-        "path":       "\033[38;2;255;255;255m██\033[0m",  # 0xFFFFFFFF
-        "enter":      "\033[38;2;111;255;233m██\033[0m",  # 0xFF6FFFE9
-        "exit":       "\033[38;2;255;0;85m██\033[0m",     # 0xFFFF0055
-        "logo":   "\033[38;2;0;229;255m██\033[0m"     # 0xFF00E5FF
+    "electric_arctic": {
+        "walls":      "\033[48;2;58;80;107m  \033[0m",    # 0xFF3A506B
+        "path":       "\033[48;2;255;255;255m  \033[0m",  # 0xFFFFFFFF
+        "enter":      "\033[48;2;111;255;233m  \033[0m",  # 0xFF6FFFE9
+        "exit":       "\033[48;2;255;0;85m  \033[0m",     # 0xFFFF0055
+        "logo":   "\033[48;2;0;229;255m  \033[0m"     # 0xFF00E5FF
     },
     
 }
@@ -106,11 +105,11 @@ THEMES = {
 
 
 
-WIDTH = 35
-HEIGHT = 15
+WIDTH = 50
+HEIGHT = 20
 
 ENTER = (0, 0)
-EXIT = (34,  14)
+EXIT = (49,  19)
 
 TOP = 1
 BOTTOM = 4
@@ -124,86 +123,21 @@ SEED = 133
 theme = THEMES["electric_arctic"]
 class Cell:
 
-    def __init__(self, row, col, size=0):
-        self.__row = row
-        self.__col = col
-        self.__size = size
-        self.__top = True
-        self.__right = True
-        self.__bottom = True
-        self.__left = True
-        self.__cell_42 = False
-        self.__visited = False
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.walls = 15  # TOP: 0001 / RIGHT: 0010 / BOTTOM: 0100 / LEFT: 1000
         self.traffic = ""
+        self.visited = False
 
-    @property
-    def cell_42(self) -> bool:
-        return self.__cell_42
 
-    @cell_42.setter
-    def cell_42(self, value) -> None:
-        self.__cell_42 = value
-
-    @property
-    def row(self) -> int:
-        return self.__row
-
-    @property
-    def col(self) -> int:
-        return self.__col
-
-    @property
-    def size(self) -> int:
-        return self.__size
-
-    @property
-    def top(self) -> bool:
-        return self.__top
-
-    @top.setter
-    def top(self, top) -> None:
-        self.__top = top
-
-    @property
-    def right(self) -> bool:
-        return self.__right
-
-    @right.setter
-    def right(self, right) -> None:
-        self.__right = right
-
-    @property
-    def bottom(self) -> bool:
-        return self.__bottom
-
-    @bottom.setter
-    def bottom(self, bottom) -> None:
-        self.__bottom = bottom
-
-    @property
-    def left(self) -> bool:
-        return self.__left
-
-    @left.setter
-    def left(self, left) -> None:
-        self.__left = left
-
-    @property
-    def visited(self) -> bool:
-        return self.__visited
-
-    @visited.setter
-    def visited(self, value) -> None:
-        self.__visited = value
-    
 class Maze:
 
     def __init__(self, width, height):
         self.width = width
         self.height = height
-        self.grid = [[Cell(y, x) for x in range(width)] for y in range(height)]
+        self.grid = [[Cell(x, y) for x in range(width)] for y in range(height)]
         self.stack = []
-        
     def get_cell(self, x, y):
         if 0 <= x < self.width and 0 <= y < self.height:
             return self.grid[y][x]
@@ -220,28 +154,28 @@ class Maze:
         ]
 
         for dx, dy in directions:
-            neighbor = self.get_cell(cell.col + dx, cell.row + dy)
+            neighbor = self.get_cell(cell.x + dx, cell.y + dy)
 
             if neighbor and not neighbor.visited:
                 neighbors.append(neighbor)
         return neighbors
 
     def remove_wall(self, current, next_cell):
-        dx = next_cell.col - current.col
-        dy = next_cell.row - current.row
+        dx = next_cell.x - current.x
+        dy = next_cell.y - current.y
 
         if dx == 1:
-            current.right = False
-            next_cell.left = False
+            current.walls -= RIGHT
+            next_cell.walls -= LEFT
         elif dx == -1:
-            current.left = False
-            next_cell.right = False
+            current.walls -= LEFT
+            next_cell.walls -= RIGHT
         elif dy == 1:
-            current.bottom = False
-            next_cell.top = False
+            current.walls -= BOTTOM
+            next_cell.walls -= TOP
         elif dy == -1:
-            current.top = False
-            next_cell.bottom = False
+            current.walls -= TOP
+            next_cell.walls -= BOTTOM
 
     def generate_maze(self, theme, animation=False):
         start_cell = self.grid[0][0]
@@ -258,7 +192,7 @@ class Maze:
                 col = 3 + x * 4 + (dx * 2)
                 print(f"\033[{row};{col}H{char}", end="")
 
-
+        
         while len(self.stack) > 0:
             current = self.stack[-1]
             neighbors = self.check_neighbors(current)
@@ -270,9 +204,9 @@ class Maze:
                 self.stack.append(next_cell)
 
                 if animation:
-                    draw_block(current.col, current.row, "  ")
-                    draw_block(current.col, current.row, "  ", next_cell.col - current.col, next_cell.row - current.row)
-                    draw_block(next_cell.col, next_cell.row, "\033[38;5;196m██\033[0m")
+                    draw_block(current.x, current.y, "  ")
+                    draw_block(current.x, current.y, "  ", next_cell.x - current.x, next_cell.y - current.y)
+                    draw_block(next_cell.x, next_cell.y, "\033[38;5;196m██\033[0m")
                     draw_block(ENTER[0], ENTER[1], theme["enter"])
                     draw_block(EXIT[0], EXIT[1], theme["exit"])
                     sys.stdout.flush()
@@ -280,7 +214,7 @@ class Maze:
             else:
                 if animation:
                     popped = self.stack.pop()
-                    draw_block(popped.col, popped.row, "  ")
+                    draw_block(popped.x, popped.y, "  ")
                     sys.stdout.flush()
                     time.sleep(0.005)
                 else:
@@ -315,20 +249,20 @@ def solve_maze(maze, ENTERY, EXIT):
             return stack
 
         neighbors = []
-        col = current.col
-        row = current.row
+        x = current.x
+        y = current.y
 
-        if row > 0 and current.top == False:  # --> check up
-            neighbors.append(maze.grid[row - 1][col])
+        if y > 0 and not (current.walls & 1):  # --> check up
+            neighbors.append(maze.grid[y - 1][x])
 
-        if row < maze.height - 1 and current.bottom == False:  # --> check down
-            neighbors.append(maze.grid[row + 1][col])
+        if y < maze.height - 1 and not (current.walls & 4):  # --> check down
+            neighbors.append(maze.grid[y + 1][x])
 
-        if col < maze.width - 1 and current.right == False:  # --> check right
-            neighbors.append(maze.grid[row][col + 1])
+        if x < maze.width - 1 and not (current.walls & 2):  # --> check right
+            neighbors.append(maze.grid[y][x + 1])
 
-        if col > 0 and current.left == False:  # --> check left
-            neighbors.append(maze.grid[row][col - 1])
+        if x > 0 and not (current.walls & 8):  # --> check left
+            neighbors.append(maze.grid[y][x - 1])
 
         valid_neighbor = None
         for n in neighbors:
@@ -340,8 +274,8 @@ def solve_maze(maze, ENTERY, EXIT):
             mark_visited(valid_neighbor)
             stack.append(valid_neighbor)
 
-            dx = valid_neighbor.col - current.col
-            dy = valid_neighbor.row - current.row
+            dx = valid_neighbor.x - current.x
+            dy = valid_neighbor.y - current.y
 
             if dy == -1:  # -> check up / North
                 valid_neighbor.traffic = "N"
@@ -386,8 +320,7 @@ def print_maze(maze, path, theme, cursor_1, cursor_2):
                 maze_way += f"{theme['enter']}"
             elif cell in path:
                 maze_way += f"{theme['path']}"
-                
-            elif cell.top and cell.right and cell.left and cell.bottom:
+            elif cell.walls == 15:
                 maze_way += f"{theme['logo']}"
             elif cell == cursor_1:
                 maze_way += "\033[38;5;196m██\033[0m"
@@ -399,7 +332,7 @@ def print_maze(maze, path, theme, cursor_1, cursor_2):
                 
                 
             #Right logic
-            if cell.right:
+            if cell.walls & 2:
                 maze_way += f"{theme['walls']}"
             else:
                 if x + 1 < maze.width:
@@ -411,7 +344,7 @@ def print_maze(maze, path, theme, cursor_1, cursor_2):
                 else:
                     maze_way += "  "
             #Bottom logic
-            if cell.bottom:
+            if cell.walls & 4:
                 bottom += f"{theme['walls']}"
             else:
                 if y + 1 < maze.height:
@@ -429,19 +362,19 @@ def print_maze(maze, path, theme, cursor_1, cursor_2):
         print(bottom)
 
 
-# def output_maze(maze, path):
-#     output = open("output_maze.txt", "w")
+def output_maze(maze, path):
+    output = open("output_maze.txt", "w")
 
-#     for row in maze.grid:
-#         for cell in row:
-#             output.write(format(cell.walls, "X"))
-#         output.write("\n")
-#     output.write("\n")
-#     output.write(f"{ENTER[0]},{ENTER[1]}\n")
-#     output.write(f"{EXIT[0]},{EXIT[1]}\n")
-#     for cell in path:
-#         output.write(cell.traffic)
-#     output.close()
+    for row in maze.grid:
+        for cell in row:
+            output.write(format(cell.walls, "X"))
+        output.write("\n")
+    output.write("\n")
+    output.write(f"{ENTER[0]},{ENTER[1]}\n")
+    output.write(f"{EXIT[0]},{EXIT[1]}\n")
+    for cell in path:
+        output.write(cell.traffic)
+    output.close()
 
 def path_animating(maze, path, theme):
     # os.system('cls' if os.name == 'nt' else 'clear')
@@ -458,8 +391,8 @@ def path_animating(maze, path, theme):
         cell = path[i]
         if i > 0:
             prev = path[i - 1]
-            draw_path_block(prev.col, prev.row, theme['path'], cell.col - prev.col, cell.row - prev.row)
-        draw_path_block(cell.col, cell.row, theme['path'])
+            draw_path_block(prev.x, prev.y, theme['path'], cell.x - prev.x, cell.y - prev.y)
+        draw_path_block(cell.x, cell.y, theme['path'])
         sys.stdout.flush()
         draw_path_block(ENTER[0], ENTER[1], theme["enter"])
         draw_path_block(EXIT[0], EXIT[1], theme["exit"])
@@ -537,7 +470,7 @@ def main(theme):
                 print("\033[H", end="")
                 print_maze(maze, [], theme, None, None)
             path = solve_maze(maze, maze.grid[ENTER[1]][ENTER[0]], maze.grid[EXIT[1]][EXIT[0]])
-            # output_maze(maze, path)
+            output_maze(maze, path)
 
 
         elif user_in == 2: # Show/Hide path
@@ -595,11 +528,3 @@ def main(theme):
     
     # maze_animating(maze, path)
 main(theme)
-
-
-# maze = Maze(WIDTH, HEIGHT)
-# draw_42(maze.grid)
-# maze.generate_maze(theme)
-# print_maze(maze, [], theme, None, None)
-   
-    
