@@ -92,12 +92,12 @@ THEMES = {
         "exit":   "\033[38;5;129m██\033[0m",    # Purple
         "logo":   "\033[38;5;49m██\033[0m"      # Spring Green
     },
-    "electric_arctic": {  # Cold neon blue atmosphere
-        "walls":  "\033[38;5;67m██\033[0m",     # Steel Blue
-        "path":   "\033[38;5;231m██\033[0m",    # Pure White
-        "enter":  "\033[38;5;87m██\033[0m",     # Bright Aqua
-        "exit":   "\033[38;5;197m██\033[0m",    # Neon Pink/Red
-        "logo":   "\033[38;5;51m██\033[0m"      # Cyan Electric
+    "electric_arctic": {
+        "walls":      "\033[48;2;58;80;107m  \033[0m",    # 0xFF3A506B
+        "path":       "\033[48;2;255;255;255m  \033[0m",  # 0xFFFFFFFF
+        "enter":      "\033[48;2;111;255;233m  \033[0m",  # 0xFF6FFFE9
+        "exit":       "\033[48;2;255;0;85m  \033[0m",     # 0xFFFF0055
+        "logo":   "\033[48;2;0;229;255m  \033[0m"     # 0xFF00E5FF
     },
     
 }
@@ -105,11 +105,11 @@ THEMES = {
 
 
 
-WIDTH = 50
-HEIGHT = 18
+WIDTH = 100
+HEIGHT = 30
 
 ENTER = (0, 0)
-EXIT = (49,  17)
+EXIT = (99,  29)
 
 TOP = 1
 BOTTOM = 4
@@ -120,7 +120,7 @@ SEED = 133
 # random.seed(SEED)
 
 
-theme = THEMES["bumblebee"]
+theme = THEMES["electric_arctic"]
 class Cell:
 
     def __init__(self, x, y):
@@ -138,7 +138,6 @@ class Maze:
         self.height = height
         self.grid = [[Cell(x, y) for x in range(width)] for y in range(height)]
         self.stack = []
-        self.empty = []
     def get_cell(self, x, y):
         if 0 <= x < self.width and 0 <= y < self.height:
             return self.grid[y][x]
@@ -178,12 +177,22 @@ class Maze:
             current.walls -= TOP
             next_cell.walls -= BOTTOM
 
-    def generate_maze(self, maze, theme, animation=False):
-        start_cell = self.grid[HEIGHT // 2][WIDTH // 2]
+    def generate_maze(self, theme, animation=False):
+        start_cell = self.grid[0][0]
         start_cell.visited = True
         self.stack.append(start_cell)
         
-        print("\033[?25l", end="")
+        if animation: # (tui)
+            print("\033[?25l", end="")
+            print("\033[H", end="")
+            print_maze(self, [], theme, None, None)
+            # get the cordinate of cell (Tui)
+            def draw_block(x, y, char, dx=0, dy=0):
+                row = 2 + y * 2 + dy
+                col = 3 + x * 4 + (dx * 2)
+                print(f"\033[{row};{col}H{char}", end="")
+
+        
         while len(self.stack) > 0:
             current = self.stack[-1]
             neighbors = self.check_neighbors(current)
@@ -193,12 +202,24 @@ class Maze:
                 self.remove_wall(current, next_cell)
                 next_cell.visited = True
                 self.stack.append(next_cell)
+
                 if animation:
-                    time.sleep(0.006)
-                    print("\033[H", end="")
-                    print_maze(maze, self.empty, theme, next_cell, current)
+                    draw_block(current.x, current.y, "  ")
+                    draw_block(current.x, current.y, "  ", next_cell.x - current.x, next_cell.y - current.y)
+                    draw_block(next_cell.x, next_cell.y, "\033[38;5;196m██\033[0m")
+                    draw_block(ENTER[0], ENTER[1], theme["enter"])
+                    draw_block(EXIT[0], EXIT[1], theme["exit"])
+                    sys.stdout.flush()
+                    time.sleep(0.001)
             else:
-                self.stack.pop()
+                if animation:
+                    popped = self.stack.pop()
+                    draw_block(popped.x, popped.y, "  ")
+                    sys.stdout.flush()
+                    time.sleep(0.001)
+                else:
+                    self.stack.pop()
+                    
         print("\033[?25h", end="")
 
 
@@ -211,7 +232,7 @@ def delete_visited(maze):
 
 def mark_visited(cell):
     cell.visited = True
-    
+
 
 def solve_maze(maze, ENTERY, EXIT):
     start_cell = ENTERY
@@ -355,23 +376,30 @@ def output_maze(maze, path):
         output.write(cell.traffic)
     output.close()
 
-def maze_animating(maze, path, theme):
-    
-    tpath = []
-    print("\033[?25l", end="") # disible the cursor
-        
-    for _ in path[:]:
-        if path:
-            tpath.append(path.pop(0))
+def path_animating(maze, path, theme):
+    # os.system('cls' if os.name == 'nt' else 'clear')
+    print("\033[?25l", end="")
+    print("\033[H", end="")
 
-        print("\033[H", end="") # return the cursor to Home
-        print_maze(maze, tpath, theme, None,  None)
+    print_maze(maze, [], theme, None, None)
 
+    def draw_path_block(x, y, char, dx=0, dy=0):
+        row = 2 + y * 2 + dy 
+        col = 3 + x * 4 + (dx * 2)
+        print(f"\033[{row};{col}H{char}", end="")
+    for i in range(len(path)):
+        cell = path[i]
+        if i > 0:
+            prev = path[i - 1]
+            draw_path_block(prev.x, prev.y, theme['path'], cell.x - prev.x, cell.y - prev.y)
+        draw_path_block(cell.x, cell.y, theme['path'])
         sys.stdout.flush()
-        time.sleep(0.007)
+        draw_path_block(ENTER[0], ENTER[1], theme["enter"])
+        draw_path_block(EXIT[0], EXIT[1], theme["exit"])
+        time.sleep(0.01)
+    print("\033[H", end="")
 
-    print("\033[H", end="") # return the cursor to Home
-    print_maze(maze, tpath, theme, None, None)
+    print_maze(maze, path, theme, None, None)
     print("\033[?25h", end="") # enable cursor
 
 
@@ -383,28 +411,30 @@ def main(theme):
     GREEN = "\033[32m"
     RED = "\033[31m"
     RESET = "\033[0m"
-    
-    print("\033[2J\033[H", end="") #clear display and cursor Home
+    print("\033[?25l", end="")
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print("\033[H", end="")
     maze = Maze(WIDTH, HEIGHT)
     draw_42(maze.grid)
-    maze.generate_maze(maze, theme)
+    maze.generate_maze(theme)
     path = solve_maze(maze, maze.grid[ENTER[1]][ENTER[0]], maze.grid[EXIT[1]][EXIT[0]])
     print_maze(maze, [], theme, None, None)
 
     while True:
         path = solve_maze(maze, maze.grid[ENTER[1]][ENTER[0]], maze.grid[EXIT[1]][EXIT[0]])
-        os.system('cls' if os.name == 'nt' else 'clear')
+        # os.system('cls' if os.name == 'nt' else 'clear')
+        print("\033[H", end="")
         if parameters["show_path"]:
             print_maze(maze, path, theme, None, None)
         else:
             print_maze(maze, [], theme, None, None)
         print("\n1. Regenerate maze")
         if parameters["show_path"]:
-            print(f"2. ON/OFF path [{GREEN + 'ON' + RESET}]")
+            print(f"2. ON/OFF path  [{GREEN + 'ON' + RESET}]")
         else:
             print(f"2. ON/OFF path [{RED + 'OFF' + RESET}]")
         if parameters["animation"]:
-            print(f"3. ON/OFF Animation [{GREEN + 'ON' + RESET}]")
+            print(f"3. ON/OFF Animation  [{GREEN + 'ON' + RESET}]")
         else:
             print(f"3. ON/OFF Animation [{RED + 'OFF' + RESET}]")
         print(f"4. Shuffle colors")
@@ -413,56 +443,58 @@ def main(theme):
 
 
         if user_in == 1: # Regenerate
-            # os.system('cls' if os.name == 'nt' else 'clear')
             print("\033[H", end="")
             maze = Maze(WIDTH, HEIGHT)
             draw_42(maze.grid)
 
             if parameters["animation"] and parameters["show_path"]:
-                maze.generate_maze(maze, theme, True)
+                maze.generate_maze(theme, True)
                 path = solve_maze(maze, maze.grid[ENTER[1]][ENTER[0]], maze.grid[EXIT[1]][EXIT[0]])
                 print("\033[H", end="")
-                maze_animating(maze, path, theme)
+                path_animating(maze, path, theme)
 
             elif not parameters["animation"] and parameters["show_path"]:
-                maze.generate_maze(maze, theme)
+                maze.generate_maze(theme)
                 path = solve_maze(maze, maze.grid[ENTER[1]][ENTER[0]], maze.grid[EXIT[1]][EXIT[0]])
                 print("\033[H", end="")
                 print_maze(maze, path, theme, None, None)
 
             elif parameters["animation"] and not parameters["show_path"]:
-                maze.generate_maze(maze, theme, True)
+                maze.generate_maze(theme, True)
+                path = solve_maze(maze, maze.grid[ENTER[1]][ENTER[0]], maze.grid[EXIT[1]][EXIT[0]])
                 print("\033[H", end="")
                 print_maze(maze, [], theme, None, None)
 
             elif not parameters["animation"] and not parameters["show_path"]:
-                maze.generate_maze(maze, theme)
+                maze.generate_maze(theme)
                 print("\033[H", end="")
                 print_maze(maze, [], theme, None, None)
+            path = solve_maze(maze, maze.grid[ENTER[1]][ENTER[0]], maze.grid[EXIT[1]][EXIT[0]])
+            output_maze(maze, path)
 
 
         elif user_in == 2: # Show/Hide path
             print("\033[H", end="")
-
             if parameters["show_path"]:
-                os.system('cls' if os.name == 'nt' else 'clear')
+                # os.system('cls' if os.name == 'nt' else 'clear')
+                
                 print("\033[H", end="")
                 print_maze(maze, [], theme, None, None)
                 parameters["show_path"] = False
                 
             elif not parameters["show_path"] and not parameters["animation"]:
-                os.system('cls' if os.name == 'nt' else 'clear')
+                # os.system('cls' if os.name == 'nt' else 'clear')
                 print("\033[H", end="")
                 print_maze(maze, path, theme, None, None)
                 parameters["show_path"] = True
                 
             elif not parameters["show_path"] and parameters["animation"]:
                 print("\033[H", end="")
-                maze_animating(maze, path, theme)
+                path_animating(maze, path, theme)
                 parameters["show_path"] = True
     
         elif user_in == 3: # Animating
-            os.system('cls' if os.name == 'nt' else 'clear')
+            # os.system('cls' if os.name == 'nt' else 'clear')
             print("\033[H", end="")
             if parameters["show_path"]:
                 print_maze(maze, path, theme, None, None)
@@ -475,7 +507,7 @@ def main(theme):
                 
 
         elif user_in == 4: # shuffle colors
-            os.system('cls' if os.name == 'nt' else 'clear')
+            # os.system('cls' if os.name == 'nt' else 'clear')
             print("\033[H", end="")
             
             theme_name = random.choice(list(THEMES.keys()))
@@ -487,19 +519,12 @@ def main(theme):
                 print_maze(maze, [], theme, None, None)
             
         elif user_in == 5:
+            print("\033[?25h", end="")
             os.system('cls' if os.name == 'nt' else 'clear')
             print("\033[H")
             exit()
-        
+        print("\033[?25h", end="")
 
-    # output_maze(maze, path)
+    
     # maze_animating(maze, path)
 main(theme)
-
-
-# maze = Maze(WIDTH, HEIGHT)
-# draw_42(maze.grid)
-# maze.generate_maze(maze)
-# os.system('cls' if os.name == 'nt' else 'clear')
-# path = solve_maze(maze, maze.grid[ENTER[1]][ENTER[0]], maze.grid[EXIT[1]][EXIT[0]])
-# maze_animating(maze, path, theme)
