@@ -1,1 +1,0 @@
-print("[ERROR] The file 'data.txt' was not found. Please verify the file path.")
