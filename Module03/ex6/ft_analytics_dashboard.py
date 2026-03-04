@@ -1,4 +1,4 @@
-game = {
+g = {
     "players": {
         "alice": {
             "level": 41,
@@ -231,13 +231,55 @@ game = {
     ]
 }
 
+list_analytics = {
+    "high score": [
+         player for player in g['players']
+         if g["players"][player]['total_score'] > 2000
+    ],
+    "score doubled": [
+         g['players'][player]['total_score'] * 2 for player in g['players']
+    ]
+}
+
+dict_analytics = {
+    "player scores": {
+        player: g['players'][player]['total_score']
+        for player in g["players"]
+    },
+    "achivement": {
+        player: g['players'][player]['achievements_count']
+        for player in g['players']
+    }
+}
+
+set_analytics = {
+   "unique players": set(
+      player for player in g['players']
+      ),
+   "unique achievements": set(
+      ach for ach in g['achievements']
+      ),
+}
+sum = 0
+for player in g['players']:
+    sum += g['players'][player]['total_score']
+avg = sum / len(g['players'])
+
 print("=== Game Analytics Dashboard ===\n")
 print("=== List Comprehension Examples ===")
+print("High scorers (>2000):", list_analytics['high score'])
+print("Scores doubled:", list_analytics['score doubled'])
 
-high_score = [
-    player for player in game['players']
-    if game["players"][player]['total_score'] > 2000
-]
-score_doubled = [
-   game['players'][player]['total_score'] * 2 for player in game['players']
-]
+print("\n=== Dict Comprehension Examples ===")
+print("Player scores:", dict_analytics['player scores'])
+print("Score categories:", dict_analytics['achivement'])
+
+print("\n=== Set Comprehension Examples ===")
+print("Unique players:", set_analytics['unique players'])
+print("Unique achievements:", set_analytics['unique achievements'])
+
+print("\n=== Combined Analysis ===")
+print("Total players:", len(g['players']))
+print("Total unique achievements:", len(g['achievements']))
+print(f"Average score: {avg:.1f}")
+print("")
