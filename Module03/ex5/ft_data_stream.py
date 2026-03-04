@@ -543,10 +543,23 @@ def fibbo(n):
     for _ in range(n):
         yield a
         a, b = b, a + b
-def prime(n):
-    for i in range (2, n):
-        if not (n % i == 0):
-            yield i
+
+def get_prime(num):
+    for i in range(2, num):
+        if num % i == 0:
+            return False
+    return True
+
+def first_primes(n):
+    count = 0
+    num = 2
+
+    while count < n:
+        if get_prime(num):
+            yield num
+            count += 1
+        num += 1
+        
 
 
 
@@ -566,4 +579,6 @@ print("\n=== Generator Demonstration ===")
 
 print("Fibonacci sequence (first 10): ", end="")
 print(*fibbo(10), sep=", ")
-print(*prime(5))
+
+print("Prime numbers (first 5): ", end="")
+print(*first_primes(5), sep=", ")

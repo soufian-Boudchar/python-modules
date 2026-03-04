@@ -55,7 +55,7 @@ class PixelDataGenerator:
             ['analyze', 'player1', 'player2', '--format=json'],
             ['help', 'commands'],
             ['version'],
-            ['config', '--set', 'debug=true'],
+            ['config', '--set', 'debug=True'],
             ['list', '--all', '--sort=name'],
             ['export', 'data.json', '--compress'],
             ['import', 'backup.json', '--merge']
