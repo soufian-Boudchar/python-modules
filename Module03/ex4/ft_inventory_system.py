@@ -1,4 +1,4 @@
-players = {
+p = {
     "players": {
         "alice": {
             "items": {
@@ -50,56 +50,62 @@ players = {
 
 
 def inventory(catalog, player):
-    summary = dict(total=0, weapon=0, consumable=0, accessory=0)
+    _sum = {
+        "total": 0,
+        "weapon": 0,
+        "consumable": 0,
+        "accessory": 0
+    }
 
     for item_name, quantity in player["items"].items():
         item = catalog[item_name]
 
-        item_data = {
+        data = {
             "type": item["type"],
             "rarity": item["rarity"],
             "value": item["value"],
             "quantity": quantity,
             "total": quantity * item["value"]
         }
-        summary[item_data["type"]] += quantity
-        print(
-            f"{item_name} ({item_data['type']}, {item_data['rarity']}): {item_data['quantity']}x @ {item_data['value']} gold each = {item_data['total']} gold"
-        )
+        _sum[data["type"]] += quantity
+        print(f"{item_name} ({data['type']}, {data['rarity']}): ", end="")
+        print(f"{data['quantity']}x @ {data['value']} gold each ", end="")
+        print(f"= {data['total']} gold")
+
     print(f"\nInventory value: {player['total_value']} gold")
     print(f"Item count: {player['item_count']} items")
-    print(
-        f"Categories: weapon({summary['weapon']}) consumable({summary['consumable']}) accessory({summary['accessory']})"
-    )
+
+    print(f"Categories: weapon({_sum['weapon']}) ", end="")
+    print(f"consumable({_sum['consumable']}) ", end="")
+    print(f"accessory({_sum['accessory']})")
 
 
-def transaction():
+def transaction() -> None:
     print("\n=== Transaction: Alice gives Bob 2 health_bytes ===")
-    players["players"]["alice"]["items"]["health_byte"] -= 1
-    players["players"]["alice"]["total_value"] -= 25
-    players["players"]["alice"]["item_count"] -= 1
-    players["players"]["bob"]["items"].update(health_byte=1)
+    p["players"]["alice"]["items"]["health_byte"] -= 1
+    p["players"]["alice"]["total_value"] -= 25
+    p["players"]["alice"]["item_count"] -= 1
+    p["players"]["bob"]["items"].update(health_byte=1)
 
 
 print("=== Player Inventory System ===\n")
 print("=== Alice's Inventory ===")
 
-inventory(players["catalog"], players["players"]["alice"])
+inventory(p["catalog"], p["players"]["alice"])
 transaction()
 print("Transaction successful!\n")
 
 print("=== Updated Inventories ===")
 print(
-    f"Alice health_bytes: {players['players']['alice']['items']['health_byte']}"
+    f"Alice health_bytes: {p['players']['alice']['items']['health_byte']}"
 )
-print(f"Bob health_bytes: {players['players']['bob']['items']['health_byte']}")
+print(f"Bob health_bytes: {p['players']['bob']['items']['health_byte']}")
 
 print("\n=== Inventory Analytics ===")
+print("Most valuable player: ", end="")
+print(f"Alice ({p['players']['alice']['total_value']} gold)")
+print(f"Most items: Alice ({p['players']['alice']['item_count']} items)")
 print(
-    f"Most valuable player: Alice ({players['players']['alice']['total_value']} gold)"
-)
-print(f"Most items: Alice ({players['players']['alice']['item_count']} items)")
-print(
-    f"Rarest items: {list(players['catalog'].keys())[3]}, "
-    f"{list(players['catalog'].keys())[1]}"
+    f"Rarest items: {list(p['catalog'])[3]}, "
+    f"{list(p['catalog'])[1]}"
 )
