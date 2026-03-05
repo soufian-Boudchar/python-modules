@@ -238,7 +238,9 @@ list_analytics = {
     ],
     "score doubled": [
          g['players'][player]['total_score'] * 2 for player in g['players']
-    ]
+    ],
+    "players_sessions": [p for p in g['players'] if g['players'][p]['sessions_played']]
+    
 }
 
 dict_analytics = {
@@ -269,7 +271,7 @@ print("=== Game Analytics Dashboard ===\n")
 print("=== List Comprehension Examples ===")
 print("High scorers (>2000):", list_analytics['high score'])
 print("Scores doubled:", list_analytics['score doubled'])
-
+print(list_analytics['active players'])
 print("\n=== Dict Comprehension Examples ===")
 print("Player scores:", dict_analytics['player scores'])
 print("Score categories:", dict_analytics['achivement'])
