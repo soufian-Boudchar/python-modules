@@ -18,9 +18,14 @@ print(f"Total unique achievements: {len(unique)}\n")
 
 print(f"Common to all players: {common}")
 
+# union: get all items (s1 | s2)
+# difference: get difference bitween sets items (s1 - s2)
+# intersection: get the common items (s1 & s2)
+
 alice_only = alice.difference(charlie.union(bob))
 bob_only = bob.difference(alice.union(charlie))
 charlie_only = charlie.difference(bob.union(alice))
+
 rar = alice_only.union(bob_only).union(charlie_only)
 
 print(f"Rare achievements (1 player): {rar}\n")

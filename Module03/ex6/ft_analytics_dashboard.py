@@ -231,16 +231,56 @@ g = {
     ]
 }
 
+
+def top_performer():
+    top_score = 0
+    for player in g["players"]:
+        player_score = g['players'][player]['total_score']
+        ach = g['players'][player]['achievements_count']
+        if player_score > top_score:
+            f = [player, player_score, ach]
+            top_score = player_score
+    return f
+
+
+def score_categories():
+    categories = {
+        "high": 0,
+        "medium": 0,
+        "low": 0
+    }
+    for player in g['players']:
+        player_score = g['players'][player]['total_score']
+        if 4000 >= player_score:
+            categories["low"] += 1
+        elif 4000 < player_score <= 7000:
+            categories['medium'] += 1
+        elif 7000 < player_score:
+            categories['high'] += 1
+    return categories
+
+
 list_analytics = {
     "high score": [
-         player for player in g['players']
-         if g["players"][player]['total_score'] > 2000
+        player for player in g['players']
+        if g["players"][player]['total_score'] > 2000
     ],
+
     "score doubled": [
+<<<<<<< HEAD
          g['players'][player]['total_score'] * 2 for player in g['players']
     ],
     "players_sessions": [p for p in g['players'] if g['players'][p]['sessions_played']]
     
+=======
+        g['players'][player]['total_score'] * 2 for player in g['players']
+    ],
+
+    "top_players": [
+        player for player in g['players']
+        if g['players'][player]['sessions_played'] >= 25
+    ]
+>>>>>>> 06e05d876572f63303a82c36caafa0631003d5d8
 }
 
 dict_analytics = {
@@ -253,27 +293,31 @@ dict_analytics = {
         for player in g['players']
     }
 }
-
 set_analytics = {
-   "unique players": set(
-      player for player in g['players']
-      ),
-   "unique achievements": set(
-      ach for ach in g['achievements']
-      ),
+    "unique players": {player for player in g['players']},
+    "unique achievements": {achiv for achiv in g['achievements']}
 }
-sum = 0
+
+scores_sum = 0
 for player in g['players']:
-    sum += g['players'][player]['total_score']
-avg = sum / len(g['players'])
+    scores_sum += g['players'][player]['total_score']
+avg = scores_sum / len(g['players'])
 
 print("=== Game Analytics Dashboard ===\n")
+
 print("=== List Comprehension Examples ===")
 print("High scorers (>2000):", list_analytics['high score'])
 print("Scores doubled:", list_analytics['score doubled'])
+<<<<<<< HEAD
 print(list_analytics['active players'])
+=======
+print("Active players:", list_analytics['top_players'])
+
+>>>>>>> 06e05d876572f63303a82c36caafa0631003d5d8
 print("\n=== Dict Comprehension Examples ===")
+categories = score_categories()
 print("Player scores:", dict_analytics['player scores'])
+print("Score categories:", categories)
 print("Score categories:", dict_analytics['achivement'])
 
 print("\n=== Set Comprehension Examples ===")
@@ -281,7 +325,10 @@ print("Unique players:", set_analytics['unique players'])
 print("Unique achievements:", set_analytics['unique achievements'])
 
 print("\n=== Combined Analysis ===")
+top = top_performer()
 print("Total players:", len(g['players']))
 print("Total unique achievements:", len(g['achievements']))
 print(f"Average score: {avg:.1f}")
-print("")
+
+print("Top performer: ", end="")
+print(f"{top[0]} ({top[1]} points, {top[2]} achievements)")

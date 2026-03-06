@@ -1,5 +1,3 @@
-import sys
-
 print("=== CYBER ARCHIVES - PRESERVATION SYSTEM ===\n")
 
 print("Initializing new storage unit: new_discovery.txt")
@@ -18,11 +16,6 @@ print(data2, end="")
 data3 = "{[}ENTRY 003{]} Archived by Data Archivist trainee\n"
 file.write(data3)
 print(data3, end="")
-
-
-
-
+file.close()
 print("\nData inscription complete. Storage unit sealed")
 print("Archive 'new_discovery.txt' ready for long-term preservation.")
-
-    

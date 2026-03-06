@@ -1,4 +1,4 @@
-players = [{
+sessions = [{
     "id": 1,
     "player": "frank",
     "event_type": "login",
@@ -500,8 +500,9 @@ players = [{
     }
 }]
 
+
 def print_events():
-    for i in players:
+    for i in sessions:
         data = dict(
             id=i['id'],
             player=i['player'],
@@ -513,30 +514,33 @@ def print_events():
         print(f"(level {data['level']}) ", end="")
         print(f"{data['event']}")
 
+
 def High_level():
     count = 0
-    for i in players:
+    for i in sessions:
         level = i['data']['level']
         if level > 10:
             count += 1
     return count
 
+
 def get_events_types():
     events = dict()
-    
+
     # <<get events types>>
-    for i in players:
+    for i in sessions:
         event_type = i['event_type']
         if event_type not in events:
             events[event_type] = 0
-    
+
     # <<count events types>>
-    for i in players:
+    for i in sessions:
         event_type = i['event_type']
         events[event_type] += 1
     # <<print events>>
     for key, value in events.items():
         print(f"{key} events: {value}")
+
 
 def fibbo(n):
     a, b = 0, 1
@@ -544,11 +548,13 @@ def fibbo(n):
         yield a
         a, b = b, a + b
 
+
 def get_prime(num):
     for i in range(2, num):
         if num % i == 0:
             return False
     return True
+
 
 def first_primes(n):
     count = 0
@@ -559,23 +565,20 @@ def first_primes(n):
             yield num
             count += 1
         num += 1
-        
-
 
 
 print("=== Game Data Stream Processor ===\n")
-print(f"Processing {len(players)} game events...\n")
+print(f"Processing {len(sessions)} game events...\n")
 print_events()
 
 print("\n=== Stream Analytics ===")
-print(f"Total events processed: {len(players)}")
+print(f"Total events processed: {len(sessions)}")
 print(f"High-level players (10+): {High_level()}")
 get_events_types()
 print("Memory usage: Constant (streaming)")
-print(f"Processing time: 0.045 seconds")
+print("Processing time: 0.045 seconds")
 
 print("\n=== Generator Demonstration ===")
-
 
 print("Fibonacci sequence (first 10): ", end="")
 print(*fibbo(10), sep=", ")
