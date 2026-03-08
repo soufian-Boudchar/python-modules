@@ -1,12 +1,10 @@
-import sys
+import os
+import time
 
-print("=== CYBER ARCHIVES - COMMUNICATION SYSTEM ===")
-
-a = input("Input Stream active. Enter archivist ID: ")
-s = input("Input Stream active. Enter status report: ")
-
-sys.stdout.write("\n{[}STANDARD{]} Archive status from ARCH_7742: " + a + "\n")
-
-sys.stderr.write("{[}ALERT{]} System diagnostic: " + s + "\n")
-sys.stdout.write("{[}STANDARD{]} Data transmission complete")
-print("\n\nThree-channel communication test successful.")
+f = open("hello", "w+")
+print("File descriptor:", f.fileno())  # الرقم اللي OS كيتعامل معاه
+print("Mode:", f.mode)                 # 'w'
+print("Encoding:", f.encoding)         # 'utf-8'
+print("Is closed?", f.closed)
+f.write("Asdasdasdasd")# False
+print("Current position:", f.tell())   # مؤشر الكتابة داخل الملف
