@@ -92,7 +92,7 @@ def main() -> None:
         print("Initializing Numeric Processor...")
         print(f"Processing data: {num_data}")
         if num_proc.validate(num_data):
-            print(f"Validation: Numeric data verified")
+            print("Validation: Numeric data verified")
             print(
                 f"Output: {num_proc.format_output(num_proc.process(num_data))}"
             )
@@ -112,9 +112,10 @@ def main() -> None:
         print("Initializing Text Processor...")
         print(f"Processing data: \"{text_data}\"")
         if text_proc.validate(text_data):
-            print(f"Validation: Text data verified")
+            print("Validation: Text data verified")
             print(
-                f"Output: {text_proc.format_output(text_proc.process(text_data))}"
+                f"Output: "
+                f"{text_proc.format_output(text_proc.process(text_data))}"
             )
         else:
             raise ValueError("Invalid data")
@@ -156,7 +157,8 @@ def main() -> None:
     for pr in processors:
         proc = pr
         print(
-            f"Result {i + 1}: {proc.format_output(proc.process(data_stream[i]))}"
+            f"Result {i + 1}: "
+            f"{proc.format_output(proc.process(data_stream[i]))}"
         )
         i += 1
     print("\nFoundation systems online. Nexus ready for advanced streams.")
