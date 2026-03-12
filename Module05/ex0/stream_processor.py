@@ -59,9 +59,6 @@ class TextProcessor(DataProcessor):
     def validate(self, data: Any) -> bool:
         return data.__class__.__name__ == "str"
 
-    def format_output(self, result: str) -> str:
-        return f"{result}"
-
 
 class LogProcessor(DataProcessor):
 
@@ -85,7 +82,7 @@ class LogProcessor(DataProcessor):
 def main() -> None:
     # Numeric Processor:
     try:
-        num_data: Union[List[int], int] = 1.1
+        num_data: Union[List[int], int] = [1, 2, 3, 4, 5]
         num_proc = NumericProcessor()
         print("=== CODE NEXUS - DATA PROCESSOR FOUNDATION ===\n")
 
@@ -105,7 +102,6 @@ def main() -> None:
 
     # Text Processor
     try:
-
         text_data = "Hello Nexus World"
         text_proc = TextProcessor()
 

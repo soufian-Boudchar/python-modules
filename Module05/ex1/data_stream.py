@@ -185,6 +185,7 @@ def main() -> None:
             f"Filtered results: {len(filtered_sensor)} "
             f"critical sensor alerts, {len(filtered_txs)} large transaction"
         )
+        print("\nAll streams processed successfully. Nexus throughput optimal")
     except ValueError as e:
         print(e)
 
