@@ -19,29 +19,29 @@ class DataProcessor(ABC):
 class NumericProcessor(DataProcessor):
 
     def process(self, data: Any) -> str:
-        if data.__class__.__name__ == "int":
+        if data.__class__.__name__ in ("int", "float"):
             info = f"Processed 1 numeric values, sum={data}, avg=1"
             return super().format_output(info)
 
         proc = data.__len__()
 
-        total = 0
+        ttl = 0
 
         for i in data:
-            total += i
+            ttl += i
 
-        avg = total / proc
+        avg = ttl / proc
 
-        info = f"Processed {proc} numeric values, sum={total}, avg={avg:.1f}"
+        info = f"Processed {proc} numeric values, sum={ttl:.2f}, avg={avg:.1f}"
         return super().format_output(info)
 
     def validate(self, data: Any) -> bool:
-        if data.__class__.__name__ == "int":
+        if data.__class__.__name__ in ("int", "float"):
             return True
 
         elif data.__class__.__name__ == "list":
             for i in data:
-                if i.__class__.__name__ != "int":
+                if i.__class__.__name__ not in ("int", "float"):
                     return False
         return True
 
@@ -85,7 +85,7 @@ class LogProcessor(DataProcessor):
 def main() -> None:
     # Numeric Processor:
     try:
-        num_data: Union[List[int], int] = [1, 2, 3, 4, 5]
+        num_data: Union[List[int], int] = 1.1
         num_proc = NumericProcessor()
         print("=== CODE NEXUS - DATA PROCESSOR FOUNDATION ===\n")
 
