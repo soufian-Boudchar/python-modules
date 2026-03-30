@@ -1,4 +1,5 @@
-from Card import Card
+from ex0.Card import Card
+
 
 class CreatureCard(Card):
     def __init__(self, name: str, cost: int, rarity: str, attack: int, health: int):
@@ -17,9 +18,9 @@ class CreatureCard(Card):
 
     def play(self, game_state: dict) -> dict:
         return {
-            'card_played': self.name,
-            'mana_used': self.cost,
-            'effect': 'Creature summoned to battlefield'
+            'card_played': game_state['card_played'],
+            'mana_used': game_state['mana_used'],
+            'effect': game_state['effect']
         }
     def attack_target(self, target) -> dict:
         target_name = target if isinstance(target, str) else target.name
