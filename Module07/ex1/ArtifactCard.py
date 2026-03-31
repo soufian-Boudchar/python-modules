@@ -4,7 +4,7 @@ from ex0.Card import Card
 class ArtifactCard(Card):
     def __init__(self, name: str, cost: int, rarity: str, durability: int, effect: str):
         if not isinstance(effect, str):
-            raise ValueError("effect_type must be string.")
+            raise ValueError("effect must be string.")
         if not isinstance(durability, int) or durability < 0:
             raise ValueError("durability must be a positive integer.")
 
@@ -16,7 +16,7 @@ class ArtifactCard(Card):
         return {
             'card_played': self.name,
             'mana_used': self.cost,
-            'effect': self.effect
+            'effect': f'permanent: {self.effect}'
         }
     
     def activate_ability(self) -> dict:

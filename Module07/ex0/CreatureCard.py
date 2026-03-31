@@ -14,19 +14,17 @@ class CreatureCard(Card):
 
         super().__init__(name, cost, rarity)
 
-
-
     def play(self, game_state: dict) -> dict:
         return {
-            'card_played': game_state['card_played'],
-            'mana_used': game_state['mana_used'],
-            'effect': game_state['effect']
+            'card_played': self.name,
+            'mana_used': self.cost,
+            'effect': 'Creature summoned to battlefield'
         }
     def attack_target(self, target) -> dict:
-        target_name = target if isinstance(target, str) else target.name
+        # target_name = target if isinstance(target, str) else target.name
         return {
             'attacker': self.name,
-            'target': target_name,
+            'target': target,
             'damage_dealt': self.attack,
             'combat_resolved': True
         }

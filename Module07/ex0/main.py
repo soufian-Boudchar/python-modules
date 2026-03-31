@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from enum import Enum
 from typing import Dict, Any, List
-from CreatureCard import CreatureCard
+from ex0.CreatureCard import CreatureCard
 
 print("=== DataDeck Card Foundation ===\n")
 
@@ -15,13 +15,8 @@ print()
 print("Playing Fire Dragon with 6 mana available:")
 print(f"Playable: {card.is_playable(6)}")
 
-game_state = {
-        'card_played': 'Fire Dragon',
-        'mana_used': 5,
-        'effect': 'Creature summoned to battlefield'
-    }
 
-print(f"Play result: {card.play(game_state)}\n")
+print(f"Play result: {card.play({'card_played': card.name})}\n")
 
 print("Fire Dragon attacks Goblin Warrior:")
 
