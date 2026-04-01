@@ -13,6 +13,12 @@ class SpellCard(Card):
 
 
     def play(self, game_state: dict) -> dict:
+        try:
+            if not self.is_playable(game_state['mana']):
+                raise ValueError("Mana is not enough")
+        except KeyError:
+            raise KeyError("Mana is not found in game_state!")
+        
         if self.effect_type.lower() == "damage":
             effect_msg = f"Deal {self.cost} damage to target"
         elif self.effect_type.lower() == "heal":

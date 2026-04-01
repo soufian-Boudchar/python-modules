@@ -15,13 +15,17 @@ class CreatureCard(Card):
         super().__init__(name, cost, rarity)
 
     def play(self, game_state: dict) -> dict:
+        try:
+            if not self.is_playable(game_state['mana']):
+                raise ValueError("Mana is not enough")
+        except KeyError:
+            raise KeyError("Mana is not found in game_state!")
         return {
             'card_played': self.name,
             'mana_used': self.cost,
             'effect': 'Creature summoned to battlefield'
         }
     def attack_target(self, target) -> dict:
-        # target_name = target if isinstance(target, str) else target.name
         return {
             'attacker': self.name,
             'target': target,

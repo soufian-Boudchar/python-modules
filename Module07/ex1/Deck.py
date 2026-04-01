@@ -16,7 +16,7 @@ class Deck:
                 self.cards_deck.remove(card)
                 return True
         return False
-    
+
     def shuffle(self) -> None:
         random.shuffle(self.cards_deck)
     
