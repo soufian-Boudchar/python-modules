@@ -35,3 +35,5 @@ try:
     print("Multiple interface implementation successful!")
 except ValueError as e:
     print(f"Error: {e}")
+except KeyError as e:
+    print(f"Error: {e}")
