@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "loading"
+version = "0.1.0"
+description = ""
+authors = ["sboudcha"]
+
+
+[tool.poetry.dependencies]
+python = "^3.12"
+requests = "^2.31.0"
+pandas = "^2.1.0"
+matplotlib = "^3.7.2"
+numpy = "^2.4.4"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
