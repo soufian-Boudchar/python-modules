@@ -42,7 +42,7 @@ file_name = "matrix_analysis.png"
 print("\nAnalyzing Matrix data...")
 print("Processing 1000 data points...")
 print("Generating visualization...")
-plt.plot(p)
+plt.plot(p, linewidth=1.5)
 plt.title("Bitcoin (BTC) Price Volatility Simulation")
 plt.xlabel("Time (Hours)")
 plt.ylabel("Price (USD)")
