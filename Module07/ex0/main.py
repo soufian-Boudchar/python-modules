@@ -1,14 +1,14 @@
-from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Dict, Any, List
 from ex0.CreatureCard import CreatureCard
+
 
 class Rarity(Enum):
     common = 'Common'
     uncommon = 'Uncommon'
     rare = 'Rare'
     legendary = 'Legendary'
-    
+
+
 print("=== DataDeck Card Foundation ===\n")
 
 print("Testing Abstract Base Class Design:\n")
@@ -23,9 +23,8 @@ print("Playing Fire Dragon with 6 mana available:")
 print(f"Playable: {card.is_playable(6)}")
 
 try:
-    print(f"Play result: {card.play({'card_played': card.name, 'mana': my_mana})}\n")
-
-
+    print(f"Play result: "
+          f"{card.play({'card_played': card.name, 'mana': my_mana})}\n")
 
     print("Fire Dragon attacks Goblin Warrior:")
 
@@ -41,4 +40,3 @@ except KeyError as e:
     print(f"\nError: {e}\n")
 except ValueError as e:
     print(f"\nError: {e}\n")
-

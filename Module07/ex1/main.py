@@ -1,4 +1,3 @@
-from ex0.Card import Card
 from ex0.CreatureCard import CreatureCard
 from ex1.ArtifactCard import ArtifactCard
 from ex1.SpellCard import SpellCard
@@ -11,10 +10,13 @@ class Rarity(Enum):
     uncommon = 'Uncommon'
     rare = 'Rare'
     legendary = 'Legendary'
+
+
 try:
     deck = Deck()
     spell = SpellCard('Lightning Bolt', 3, Rarity.rare.value, 'damage')
-    artifact = ArtifactCard('Mana Crystal', 2, Rarity.uncommon.value, 3, '+1 mana per turn')
+    artifact = ArtifactCard('Mana Crystal', 2, Rarity.uncommon.value, 3,
+                            '+1 mana per turn')
     creature = CreatureCard('Fire Dragon', 5, Rarity.legendary.value, 12, 95)
     deck.add_card(creature)
     deck.add_card(artifact)
@@ -28,25 +30,28 @@ try:
 
     print()
 
-    print(f"Drawing and playing cards:\n")
+    print("Drawing and playing cards:\n")
     card = deck.draw_card()
     print("Drew: Lightning Bolt (Spell)")
 
-    print(f"Play result: {card.play({'card_played': card.name, 'mana': my_mana})}")
-    
+    print(f"Play result: "
+          f"{card.play({'card_played': card.name, 'mana': my_mana})}")
+
     print()
 
     print("Drew: Mana Crystal (Artifact)")
     card = deck.draw_card()
 
-    print(f"Play result: {card.play({'card_played': card.name, 'mana': my_mana})}")
-  
+    print(f"Play result: "
+          f"{card.play({'card_played': card.name, 'mana': my_mana})}")
+
     print()
 
     print("Drew: Fire Dragon (Creature)")
     card = deck.draw_card()
 
-    print(f"Play result: {card.play({'card_played': card.name,  'mana': my_mana})}")
+    print(f"Play result: "
+          f"{card.play({'card_played': card.name,  'mana': my_mana})}")
 
     print()
 

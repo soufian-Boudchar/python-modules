@@ -8,8 +8,8 @@ class Rarity(Enum):
     rare = 'Rare'
     legendary = 'Legendary'
 
-print("=== DataDeck Ability System ===\n")
 
+print("=== DataDeck Ability System ===\n")
 
 print("EliteCard capabilities:")
 print("- Card: ['play', 'get_card_info', 'is_playable']")
@@ -18,8 +18,8 @@ print("- Magical: ['cast_spell', 'channel_mana', 'get_magic_stats']\n")
 
 print("Playing Arcane Warrior (Elite Card):\n")
 try:
-    elit_card = EliteCard('Arcane Warrior', 4, Rarity.legendary.value, 5, 'melee', 100, 3)
-
+    elit_card = EliteCard('Arcane Warrior', 4, Rarity.legendary.value, 5,
+                          'melee', 100, 3)
 
     print("Combat phase:")
     print(f"Attack result: {elit_card.attack('Enemyy')}")
@@ -27,11 +27,13 @@ try:
 
     print("\nMagic phase:")
 
-    print(f"Spell cast: {elit_card.cast_spell('Fireball', ['Enemy1', 'Enemy2'])}")
+    print(
+        f"Spell cast: {elit_card.cast_spell('Fireball', ['Enemy1', 'Enemy2'])}"
+    )
     print(f"Mana channel: {elit_card.channel_mana(3)}")
 
     print()
-    
+
     print("Multiple interface implementation successful!")
 except ValueError as e:
     print(f"Error: {e}")

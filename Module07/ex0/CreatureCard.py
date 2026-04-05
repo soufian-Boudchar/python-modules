@@ -2,7 +2,9 @@ from ex0.Card import Card
 
 
 class CreatureCard(Card):
-    def __init__(self, name: str, cost: int, rarity: str, attack: int, health: int):
+
+    def __init__(self, name: str, cost: int, rarity: str, attack: int,
+                 health: int):
         if not isinstance(attack, int) or not isinstance(health, int):
             raise ValueError("Attack and health must be positive integers.")
         if attack < 0 or health < 0:
@@ -10,7 +12,6 @@ class CreatureCard(Card):
 
         self.attack = attack
         self.health = health
-
 
         super().__init__(name, cost, rarity)
 
@@ -25,6 +26,7 @@ class CreatureCard(Card):
             'mana_used': self.cost,
             'effect': 'Creature summoned to battlefield'
         }
+
     def attack_target(self, target) -> dict:
         return {
             'attacker': self.name,

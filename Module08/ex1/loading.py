@@ -9,7 +9,6 @@ print("Checking dependencies:")
 packages_import = {
     "pandas": "Data manipulation ready",
     "matplotlib": "Visualization ready",
-    "requests": "Network access ready",
     "numpy": "Numerical computations ready"
 }
 
@@ -20,7 +19,7 @@ for i in packages_import.items():
     message = i[1]
     try:
         module = importlib.import_module(name)
-        print(f"[OK] {name}, ({module.__version__}) - {message}")
+        print(f"[OK] {name} ({module.__version__}) - {message}")
     except ImportError:
         print(f"[ERROR] {name} is missing :(")
         missing = True
@@ -31,9 +30,23 @@ if missing:
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-print("\nAnalyzing Matrix data...")
-data = np.random.randn(1000, 2)
-p = pd.DataFrame(data, columns=['hello', 'world'])
 
+
+
+base_price = 70000
+price_change = np.random.randn(1000)
+bitcoin_prices = base_price + np.cumsum(price_change)
+p = pd.DataFrame(bitcoin_prices)
+
+file_name = "matrix_analysis.png"
+print("\nAnalyzing Matrix data...")
+print("Processing 1000 data points...")
+print("Generating visualization...")
 plt.plot(p)
-plt.savefig("hello.png")
+plt.title("Bitcoin (BTC) Price Volatility Simulation")
+plt.xlabel("Time (Hours)")
+plt.ylabel("Price (USD)")
+plt.savefig(file_name)
+
+print("\nAnalysis complete!")
+print(f"Results saved to: {file_name}")

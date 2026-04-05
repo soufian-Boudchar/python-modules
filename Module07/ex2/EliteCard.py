@@ -4,25 +4,22 @@ from ex2.Magical import Magical
 
 
 class EliteCard(Card, Combatable, Magical):
-    def __init__(self, name: str,
-                 cost: int,
-                 rarity: str,
-                 damage: int,
-                 combat_type: str,
-                 health: int,
-                 defense: int):
-        if (not isinstance(damage, int) or
-            not isinstance(health, int) or
-            not isinstance(defense, int)):
-            raise ValueError("damage and health and defense must be a positive integer.")
+
+    def __init__(self, name: str, cost: int, rarity: str, damage: int,
+                 combat_type: str, health: int, defense: int):
+        if (not isinstance(damage, int) or not isinstance(health, int)
+                or not isinstance(defense, int)):
+            raise ValueError(
+                "damage and health and defense must be a positive integer.")
         if not isinstance(combat_type, str):
-             raise ValueError("combat_type must be string.")
+            raise ValueError("combat_type must be string.")
 
         self.defense = defense
         self.health = health
         self.damage = damage
         self.combat_type = combat_type
         super().__init__(name, cost, rarity)
+
     def play(self, game_state: dict) -> dict:
         try:
             if game_state['mana'] < self.cost:
@@ -35,6 +32,7 @@ class EliteCard(Card, Combatable, Magical):
             'mana_used': self.cost,
             'health': self.health
         }
+
     def attack(self, target) -> dict:
         return {
             'attacker': self.name,
@@ -47,8 +45,7 @@ class EliteCard(Card, Combatable, Magical):
         taken = incoming_damage - self.defense
         if taken < 0:
             taken = 0
-            
-            
+        health = 0
         health -= taken
         return {
             'defender': self.name,
@@ -56,15 +53,15 @@ class EliteCard(Card, Combatable, Magical):
             'damage_blocked': self.defense,
             'still_alive': self.health > 0
         }
-    
+
     def get_combat_stats(self) -> dict:
-        return{
+        return {
             'damage': self.damage,
             'defense': self.defense,
             'health': self.health,
             'combat_type': self.combat_type
         }
-    
+
     def cast_spell(self, spell_name: str, targets: list) -> dict:
         return {
             'caster': self.name,
@@ -72,15 +69,12 @@ class EliteCard(Card, Combatable, Magical):
             'targets': targets,
             'mana_used': self.cost
         }
-    
+
     def channel_mana(self, amount: int) -> dict:
-        return {
-            'channeled': amount,
-            'total_mana': amount + self.cost
-        }
-    
+        return {'channeled': amount, 'total_mana': amount + self.cost}
+
     def get_magic_stats(self) -> dict:
-        return{
+        return {
             'damage': self.damage,
             'defense': self.defense,
             'health': self.health,

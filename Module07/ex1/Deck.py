@@ -4,12 +4,15 @@ import random
 from ex1.ArtifactCard import ArtifactCard
 from ex1.SpellCard import SpellCard
 
+
 class Deck:
+
     def __init__(self):
         self.cards_deck = []
+
     def add_card(self, card: Card) -> None:
         self.cards_deck.append(card)
-    
+
     def remove_card(self, card_name: str) -> bool:
         for card in self.cards_deck:
             if card.name == card_name:
@@ -19,7 +22,7 @@ class Deck:
 
     def shuffle(self) -> None:
         random.shuffle(self.cards_deck)
-    
+
     def draw_card(self) -> Card:
         if not self.cards_deck:
             raise ValueError("Deck of cards is empty!")
@@ -27,7 +30,7 @@ class Deck:
 
     def get_deck_stats(self) -> dict:
         total_cards = len(self.cards_deck)
-        
+
         creatures = 0
         spells = 0
         artifacts = 0

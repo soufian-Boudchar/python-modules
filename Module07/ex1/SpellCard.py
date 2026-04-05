@@ -2,8 +2,8 @@ from ex0.Card import Card
 
 
 class SpellCard(Card):
-    def __init__(self, name: str, cost: int, rarity: str, effect_type: str):
 
+    def __init__(self, name: str, cost: int, rarity: str, effect_type: str):
 
         if not isinstance(effect_type, str):
             raise ValueError("effect_type must be string.")
@@ -11,14 +11,13 @@ class SpellCard(Card):
         self.effect_type = effect_type
         super().__init__(name, cost, rarity)
 
-
     def play(self, game_state: dict) -> dict:
         try:
             if not self.is_playable(game_state['mana']):
                 raise ValueError("Mana is not enough")
         except KeyError:
             raise KeyError("Mana is not found in game_state!")
-        
+
         if self.effect_type.lower() == "damage":
             effect_msg = f"Deal {self.cost} damage to target"
         elif self.effect_type.lower() == "heal":
