@@ -32,7 +32,7 @@ class SpaceMission(BaseModel):
     budget_millions: float = Field(ge=1.0, le=10000.0)
 
 
-    @model_validator
+    @model_validator(mode="after")
     def  format_validator(self):
         if not self.mission_id.startswith("M"):
             raise ValueError("Mission ID must start with \"M\"")
@@ -64,12 +64,96 @@ class SpaceMission(BaseModel):
     
     
     
+def mission_creator(
+        _mission_id_: str,
+        _mission_name_: str,
+        _destination_: str,
+        _launch_date_: datetime,
+        _duration_days_: int,
+        _crew_: list[CrewMember],
+        _mission_status_: str,
+        _budget_millions_: float,
+    ) -> None:
+    try:
+        spm = SpaceMission(
+            mission_id=_mission_id_,
+            mission_name=_mission_id_,
+            destination=_destination_,
+            launch_date=_launch_date_,
+            duration_days=_duration_days_,
+            crew = _crew_,
+            mission_status=_mission_status_,
+            budget_millions=_budget_millions_
+        )
+        print("Valid mission created:")
+        print(f"Mission: {spm.mission_name}")
+        print(f"ID: {spm.mission_id}")
+        print(f"Destination: {spm.destination}")
+        print(f"Duration: {spm.duration_days} days")
+        print(f"Budget: ${spm.budget_millions}M")
+        print(f"Crew size: {len(spm.crew)}")
+        print("Crew members:")
+        for member in spm.crew:
+            print(f"- {member.name} ({member.rank.value}) - {member.specialization}")
+    except ValidationError as e:
+        print(e.errors()[0]['msg'].replace("Value error, ", ""))
+        
     
-    
-def main() -> None:
-    pass    
     
     
     
 if __name__ == "__main__":
-    main()
+    member1 = CrewMember(
+        member_id="CM001",
+        name="Sarah Connor",
+        rank=Rank.COMMANDER,
+        age=43,
+        specialization="Mission Command",
+        years_experience=19,
+        is_active=True
+    )
+    member2 = CrewMember(
+        member_id="CM002",
+        name="John Smith",
+        rank=Rank.CAPTAIN,
+        age=43,
+        specialization="Navigation",
+        years_experience=30,
+        is_active=True
+    )
+    member3 = CrewMember(
+        member_id="CM003",
+        name="Alice Johnson",
+        rank=Rank.OFFICER,
+        age=35,
+        specialization="Engineering",
+        years_experience=15,
+        is_active=True
+    )
+    members = [member1, member2, member3]
+    print("Space Mission Crew Validation")
+    print("=========================================")
+    mission_creator(
+               _mission_id_ = "M2024_MARS",
+               _mission_name_ = "Mars Colony Establishment",
+               _destination_ = "Mars",
+               _launch_date_ = datetime(2024,3,30),
+               _duration_days_ = 900,
+               _crew_ =  members,
+               _mission_status_ = "planned",
+               _budget_millions_ =  2500.0
+        )
+    print("\n=========================================")
+    print("Expected validation error:")
+    memberz = CrewMember(
+        member_id="CM008",
+        name="sboudcha",
+        rank=Rank.OFFICER,
+        age=35,
+        specialization="Engineering",
+        years_experience=15,
+        is_active=True
+    )
+
+    mission_creator()
+    
