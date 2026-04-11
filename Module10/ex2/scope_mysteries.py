@@ -23,5 +23,49 @@ def enchantment_factory(enchantment_type: str) -> Callable:
     return enchantment
 
 def memory_vault() -> dict[str, Callable]:
-    def store(key: any, value: any) -> dict[any, any]:
-        return {key: value}
+    vault = {}
+
+
+    def store(key: str, value: any) -> None:
+        vault[key] = value
+
+    def recall(key: str) -> None:
+        return vault.get(key, "Memory not found")
+    return {
+        'store': store,
+        'recall': recall
+    }
+
+
+if __name__ == "__main__":
+    counter_a = mage_counter()
+    counter_b = mage_counter()
+    print("Testing mage counter...")
+    print(f"counter_a call 1: {counter_a()}")
+    print(f"counter_a call 2: {counter_a()}")
+    print(f"counter_b call 1: {counter_b()}")
+    
+    print()
+    print("Testing spell accumulator...")
+    base = spell_accumulator(100)
+    print(f"Base 100, add 20: {base(20)}")
+    print(f"Base 100, add 30: {base(30)}")
+    
+    print()
+    print("Testing enchantment factory...")
+    enchantment = enchantment_factory("Flaming")
+    print(enchantment("Sword"))
+    
+    enchantment = enchantment_factory("Frozen")
+    print(enchantment("Shield"))
+    
+    print()
+    print("Testing memory vault...")
+    memory = memory_vault()
+    store = memory['store']
+    recall = memory['recall']
+    
+    store('secret', 42)
+    print(f"Store 'secret' = 42")
+    print(f"Recall 'secret': {recall('secret')}")
+    print(f"Recall 'unknown': {recall('unknown')}")

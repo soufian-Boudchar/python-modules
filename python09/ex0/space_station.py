@@ -10,7 +10,7 @@ class SpaceModel(BaseModel):
     oxygen_level: float = Field(ge=0.0, le=100.0)
     last_maintenance: datetime = Field(...)
     is_operational: bool = Field(default=True)
-    notes: str | None = Field(default=None,max_length=200)
+    notes: str | None = Field(default=None, max_length=200)
 
 
 def main() -> None:
@@ -48,8 +48,9 @@ def main() -> None:
                           is_operational=True,
                           last_maintenance=datetime(1999, 12, 12),
                           notes=None)
-    except (ValidationError, Exception) as e:
+    except ValidationError as e:
         print(e.errors()[0]['msg'])
+
 
 if __name__ == "__main__":
     try:
